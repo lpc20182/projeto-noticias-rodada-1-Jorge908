@@ -40,7 +40,14 @@ class TagDetalhesView(DetailView):
         context = super().get_context_data(**kwargs)
         context['noticias'] = Noticia.objects.filter(tags__in=[self.object])
         return context
-
+def noticias_da_tag(request, slug):
+    try:
+        tag = Tag.objects.get(slug=slug)
+        noticias = Noticia.objects.filter(tags__in=[tag])
+        percentual = noticias.count()/Noticia.objects.count()*100
+        return render(request, 'app_noticias/noticias_da_tag.html', {'percentual': percentual, 'tag': tag, 'noticias': noticias})
+    except Tag.DoesNotExist:
+        raise Http404('Tag não encontrada')
 
 class ContatoView(FormView):
     template_name = 'app_noticias/contato.html'
@@ -59,15 +66,6 @@ class ContatoView(FormView):
 
 class ContatoSucessoView(TemplateView):
     template_name = 'app_noticias/contato_sucesso.html'
-
-
-def noticias_da_tag(request, tag_slug):
-    try:
-        tag = Tag.objects.get(slug=tag_slug)
-        noticias = Noticia.objects.filter(tags__in=[tag])
-    except Tag.DoesNotExist:
-        raise Http404('Tag não encontrada')
-    return render(request, 'app_noticias/noticias_da_tag.html', {'tag': tag, 'noticias': noticias})
 
 
 def noticia_detalhes(request, id):

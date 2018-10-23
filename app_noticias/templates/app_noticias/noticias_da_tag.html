@@ -11,5 +11,6 @@
     <div><a href="{% url "detalhes" noticia.pk %}">{{ noticia.titulo }}</a></div>
 </div>
 {% endfor %}
+<h4> A Porcentagem de Noticias na Tag "{{ tag }}" é de: {{ percentual | floatformat:1 }} %.</h4>
 </body>
 </html>
